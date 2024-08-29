@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: game-2048
+  labels:
+    app: game
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: game
+  template:
+    metadata:
+      name: game-pod
+      labels:
+        app: game
+    spec:
+      containers:
+        - name: 2048-con
+          image: charanreddy12/2048:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-2048
+  labels:
+    type: nodeport
+spec:
+  selector:
+    app: game
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 31000
+      protocol: TCP
