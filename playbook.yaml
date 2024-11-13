@@ -1,0 +1,31 @@
+---
+- name: Apply Kubernetes deployment and service files
+  hosts: master
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Copy Kubernetes Deployment YAML file
+      copy:
+        src: ./kubernetes/Deployment.yaml
+        dest: /home/charan/Deployment.yaml
+        mode: 0644
+
+    - name: Copy Kubernetes Service YAML file
+      copy:
+        src: ./kubernetes/Service.yaml
+        dest: /home/charan/Service.yaml
+        mode: 0644
+
+    - name: Apply Kubernetes Deployment
+      shell: "kubectl apply -f /home/charan/Deployment.yaml"
+      args:
+        executable: /bin/bash
+      environment:
+        KUBECONFIG: /home/charan/.kube/config
+
+    - name: Apply Kubernetes Service
+      shell: "kubectl apply -f /home/charan/Service.yaml"
+      args:
+        executable: /bin/bash
+      environment:
+        KUBECONFIG: /home/charan/.kube/config
